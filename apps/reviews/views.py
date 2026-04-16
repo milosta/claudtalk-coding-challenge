@@ -7,6 +7,7 @@ from apps.catalog.models import Product
 
 from .forms import ReviewForm
 from .models import Review
+from .services import get_product_aggregate
 
 
 def _render_section(
@@ -16,6 +17,7 @@ def _render_section(
         "product": product,
         "review_form": form,
         "reviews": product.reviews.select_related("user"),
+        "aggregate": get_product_aggregate(product.pk),
     }
     template = (
         "reviews/partials/_review_section.html" if request.htmx else "catalog/product_detail.html"

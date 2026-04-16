@@ -1,3 +1,4 @@
+from django.db.models import Avg, Count
 from django.views.generic import DetailView, ListView
 
 from .forms import ProductFilterForm
@@ -20,21 +21,31 @@ class ProductListView(ListView):
         return ProductFilterForm(self.request.GET or None)
 
     def get_queryset(self):
-        qs = Product.objects.select_related("category")
+        qs = Product.objects.select_related("category").annotate(
+            avg_rating=Avg("reviews__rating"),
+            review_count=Count("reviews"),
+        )
         form = self.get_form()
         if not form.is_valid():
             return qs.order_by("-created_at")
 
         q = form.cleaned_data.get("q")
         category = form.cleaned_data.get("category")
+        min_rating = form.cleaned_data.get("min_rating")
         sort = form.cleaned_data.get("sort") or "newest"
 
         if category:
             qs = qs.filter(category=category)
+        if min_rating:
+            qs = qs.filter(avg_rating__gte=int(min_rating))
         if q:
             qs = build_search(qs, q)
+        elif sort == "rating":
+            qs = qs.order_by("-avg_rating", "-created_at")
+        elif sort == "name":
+            qs = qs.order_by("name")
         else:
-            qs = qs.order_by("name" if sort == "name" else "-created_at")
+            qs = qs.order_by("-created_at")
         return qs
 
     def get_context_data(self, **kwargs):
@@ -51,8 +62,10 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         from apps.reviews.forms import ReviewForm
+        from apps.reviews.services import get_product_aggregate
 
         ctx = super().get_context_data(**kwargs)
         ctx["review_form"] = ReviewForm()
         ctx["reviews"] = self.object.reviews.select_related("user")
+        ctx["aggregate"] = get_product_aggregate(self.object.pk)
         return ctx

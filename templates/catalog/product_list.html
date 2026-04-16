@@ -9,7 +9,7 @@
         hx-swap="outerHTML"
         hx-push-url="true"
         hx-trigger="change, keyup changed delay:400ms from:input[name='q']"
-        class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        class="grid grid-cols-1 md:grid-cols-5 gap-3">
     <input type="text" name="q" value="{{ filter_form.q.value|default:'' }}"
            placeholder="Search products…"
            class="md:col-span-2 px-3 py-2 border border-slate-300 rounded" />
@@ -22,6 +22,14 @@
         </option>
       {% endfor %}
     </select>
+    <select name="min_rating" class="px-3 py-2 border border-slate-300 rounded">
+      {% for value, label in filter_form.min_rating.field.choices %}
+        <option value="{{ value }}"
+                {% if filter_form.min_rating.value == value %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select>
     <select name="sort" class="px-3 py-2 border border-slate-300 rounded">
       {% for value, label in filter_form.sort.field.choices %}
         <option value="{{ value }}"
@@ -31,7 +39,7 @@
       {% endfor %}
     </select>
     <noscript>
-      <div class="md:col-span-4">
+      <div class="md:col-span-5">
         <button type="submit"
                 class="px-4 py-2 bg-slate-900 text-white rounded hover:bg-slate-700">
           Apply

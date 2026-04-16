@@ -1,5 +1,8 @@
 <section id="review-section" class="mt-8 space-y-4">
-  <h2 class="text-xl font-semibold">Reviews</h2>
+  <div class="flex items-center justify-between">
+    <h2 class="text-xl font-semibold">Reviews</h2>
+    {% include "reviews/partials/_rating_summary.html" %}
+  </div>
   {% if user.is_authenticated %}
     {% include "reviews/partials/_review_form.html" %}
   {% else %}
