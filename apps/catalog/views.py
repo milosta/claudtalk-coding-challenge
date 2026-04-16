@@ -2,6 +2,7 @@ from django.views.generic import DetailView, ListView
 
 from .forms import ProductFilterForm
 from .models import Product
+from .search import build_search
 
 
 class ProductListView(ListView):
@@ -16,14 +17,18 @@ class ProductListView(ListView):
     def get_queryset(self):
         qs = Product.objects.select_related("category")
         form = self.get_form()
-        if form.is_valid():
-            q = form.cleaned_data.get("q")
-            category = form.cleaned_data.get("category")
-            sort = form.cleaned_data.get("sort") or "newest"
-            if q:
-                qs = qs.filter(name__icontains=q)
-            if category:
-                qs = qs.filter(category=category)
+        if not form.is_valid():
+            return qs.order_by("-created_at")
+
+        q = form.cleaned_data.get("q")
+        category = form.cleaned_data.get("category")
+        sort = form.cleaned_data.get("sort") or "newest"
+
+        if category:
+            qs = qs.filter(category=category)
+        if q:
+            qs = build_search(qs, q)
+        else:
             qs = qs.order_by("name" if sort == "name" else "-created_at")
         return qs
 
