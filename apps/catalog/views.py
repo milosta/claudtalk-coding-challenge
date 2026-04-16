@@ -11,6 +11,11 @@ class ProductListView(ListView):
     context_object_name = "products"
     paginate_by = 12
 
+    def get_template_names(self) -> list[str]:
+        if getattr(self.request, "htmx", False):
+            return ["catalog/partials/_product_grid.html"]
+        return [self.template_name]
+
     def get_form(self) -> ProductFilterForm:
         return ProductFilterForm(self.request.GET or None)
 
