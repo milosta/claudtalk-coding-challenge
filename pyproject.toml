@@ -1,0 +1,30 @@
+[project]
+name = "cloudtalk-reviews"
+version = "0.1.0"
+description = "Product review system built with Django + HTMX for the CloudTalk assignment."
+requires-python = ">=3.12"
+dependencies = [
+    "Django>=5.1,<5.2",
+    "psycopg[binary]>=3.2",
+    "django-environ>=0.11",
+    "django-redis>=5.4",
+    "django-htmx>=1.19",
+    "gunicorn>=22",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-django>=4.8",
+    "factory-boy>=3.3",
+    "ruff>=0.9",
+    "pre-commit>=3.7",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py", "tests.py", "*_test.py"]
+addopts = "-ra --strict-markers --reuse-db"
+
+[tool.setuptools.packages.find]
+include = ["config*", "apps*"]
