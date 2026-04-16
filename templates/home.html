@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+  <h1 class="text-2xl font-semibold mb-2">Welcome to CloudTalk Reviews</h1>
+  <p class="text-slate-600">
+    {% if user.is_authenticated %}
+      You're signed in as <strong>{{ user.username }}</strong>.
+    {% else %}
+      <a href="{% url 'accounts:login' %}" class="underline">Log in</a>
+      or
+      <a href="{% url 'accounts:signup' %}" class="underline">sign up</a>
+      to continue.
+    {% endif %}
+  </p>
+</div>
+{% endblock %}

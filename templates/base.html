@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}CloudTalk Reviews{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <nav class="bg-white border-b border-slate-200">
+      <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="/" class="font-semibold text-lg">
+          CloudTalk Reviews
+        </a>
+        <div class="flex items-center gap-4 text-sm">
+          {% if user.is_authenticated %}
+            <span class="text-slate-600">Hi, {{ user.username }}</span>
+            <form method="post" action="{% url 'accounts:logout' %}" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="text-slate-700 hover:text-slate-900">Logout</button>
+            </form>
+          {% else %}
+            <a href="{% url 'accounts:login' %}" class="text-slate-700 hover:text-slate-900">Login</a>
+            <a href="{% url 'accounts:signup' %}"
+               class="px-3 py-1.5 bg-slate-900 text-white rounded hover:bg-slate-700">
+              Sign up
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+    <main class="max-w-5xl mx-auto px-4 py-8">
+      {% if messages %}
+        <ul class="mb-4 space-y-2">
+          {% for message in messages %}
+            <li class="px-4 py-2 rounded bg-slate-100 border border-slate-200 text-sm">
+              {{ message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
