@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} · CloudTalk Reviews{% endblock %}
+
+{% block content %}
+<nav class="text-sm text-slate-500 mb-4">
+  <a href="{% url 'catalog:product-list' %}" class="hover:underline">Products</a>
+  <span class="mx-1">/</span>
+  <span>{{ product.category.name }}</span>
+</nav>
+
+<article class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+  <h1 class="text-2xl font-semibold">{{ product.name }}</h1>
+  <p class="text-xs text-slate-500 mt-1">{{ product.category.name }}</p>
+  <p class="text-slate-700 mt-4 whitespace-pre-line">{{ product.description }}</p>
+</article>
+{% endblock %}
