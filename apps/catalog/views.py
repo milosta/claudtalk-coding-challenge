@@ -48,3 +48,11 @@ class ProductDetailView(DetailView):
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
     slug_url_kwarg = "slug"
+
+    def get_context_data(self, **kwargs):
+        from apps.reviews.forms import ReviewForm
+
+        ctx = super().get_context_data(**kwargs)
+        ctx["review_form"] = ReviewForm()
+        ctx["reviews"] = self.object.reviews.select_related("user")
+        return ctx

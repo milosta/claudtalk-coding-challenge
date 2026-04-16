@@ -1,0 +1,11 @@
+<section id="review-section" class="mt-8 space-y-4">
+  <h2 class="text-xl font-semibold">Reviews</h2>
+  {% if user.is_authenticated %}
+    {% include "reviews/partials/_review_form.html" %}
+  {% else %}
+    <p class="text-sm text-slate-600">
+      <a href="{% url 'accounts:login' %}" class="underline">Log in</a> to write a review.
+    </p>
+  {% endif %}
+  {% include "reviews/partials/_review_list.html" %}
+</section>

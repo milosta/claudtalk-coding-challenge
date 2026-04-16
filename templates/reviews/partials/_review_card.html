@@ -1,0 +1,30 @@
+<article id="review-{{ review.pk }}"
+         class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+  <header class="flex items-center justify-between mb-2">
+    <div>
+      <span class="font-semibold">{{ review.title }}</span>
+      <span class="ml-2 text-sm text-amber-500">{{ review.rating }} / 5</span>
+    </div>
+    <div class="text-xs text-slate-500">
+      {{ review.user.username }} · {{ review.created_at|date:"M j, Y" }}
+      {% if review.updated_at != review.created_at %}
+        <span title="{{ review.updated_at|date:'M j, Y H:i' }}">(edited)</span>
+      {% endif %}
+    </div>
+  </header>
+  <p class="text-slate-700 whitespace-pre-line">{{ review.body }}</p>
+  {% if user.is_authenticated and review.user_id == user.id %}
+    <footer class="mt-3 flex gap-2 text-sm">
+      <a href="{% url 'reviews:edit' pk=review.pk %}" class="text-slate-600 hover:text-slate-900 underline">Edit</a>
+      <form method="post" action="{% url 'reviews:delete' pk=review.pk %}"
+            hx-post="{% url 'reviews:delete' pk=review.pk %}"
+            hx-target="#review-section"
+            hx-swap="outerHTML"
+            hx-confirm="Delete your review?"
+            class="inline">
+        {% csrf_token %}
+        <button type="submit" class="text-red-600 hover:text-red-800 underline">Delete</button>
+      </form>
+    </footer>
+  {% endif %}
+</article>

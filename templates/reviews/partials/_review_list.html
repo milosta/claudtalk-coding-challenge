@@ -1,0 +1,7 @@
+<div id="review-list" class="space-y-3">
+  {% for review in reviews %}
+    {% include "reviews/partials/_review_card.html" with review=review %}
+  {% empty %}
+    <p class="text-slate-500 text-sm">No reviews yet.</p>
+  {% endfor %}
+</div>
