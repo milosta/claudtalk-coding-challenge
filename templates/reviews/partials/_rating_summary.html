@@ -1,4 +1,4 @@
-<div id="rating-summary" class="flex items-center gap-2">
+<div id="rating-summary" class="flex items-center gap-2"{% if oob %} hx-swap-oob="outerHTML"{% endif %}>
   {% if aggregate.count %}
     <span class="text-amber-500 font-semibold">{{ aggregate.avg|floatformat:1 }} / 5</span>
     <span class="text-slate-500 text-sm">

@@ -63,9 +63,15 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         from apps.reviews.forms import ReviewForm
         from apps.reviews.services import get_product_aggregate
+        from apps.reviews.views import REVIEWS_PER_PAGE
+
+        from django.core.paginator import Paginator
 
         ctx = super().get_context_data(**kwargs)
+        paginator = Paginator(self.object.reviews.select_related("user"), REVIEWS_PER_PAGE)
+        page = paginator.get_page(self.request.GET.get("page"))
         ctx["review_form"] = ReviewForm()
-        ctx["reviews"] = self.object.reviews.select_related("user")
+        ctx["reviews"] = page
+        ctx["page_obj"] = page
         ctx["aggregate"] = get_product_aggregate(self.object.pk)
         return ctx

@@ -15,7 +15,11 @@
   <p class="text-slate-700 whitespace-pre-line">{{ review.body }}</p>
   {% if user.is_authenticated and review.user_id == user.id %}
     <footer class="mt-3 flex gap-2 text-sm">
-      <a href="{% url 'reviews:edit' pk=review.pk %}" class="text-slate-600 hover:text-slate-900 underline">Edit</a>
+      <a href="{% url 'reviews:edit' pk=review.pk %}"
+         hx-get="{% url 'reviews:edit' pk=review.pk %}"
+         hx-target="#review-{{ review.pk }}"
+         hx-swap="outerHTML"
+         class="text-slate-600 hover:text-slate-900 underline">Edit</a>
       <form method="post" action="{% url 'reviews:delete' pk=review.pk %}"
             hx-post="{% url 'reviews:delete' pk=review.pk %}"
             hx-target="#review-section"

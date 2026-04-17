@@ -1,0 +1,13 @@
+{% for review in reviews %}
+  {% include "reviews/partials/_review_card.html" with review=review %}
+{% endfor %}
+{% if page_obj.has_next %}
+  <div id="review-load-more" class="text-center pt-2">
+    <button hx-get="{% url 'reviews:page' slug=product.slug %}?page={{ page_obj.next_page_number }}"
+            hx-target="#review-load-more"
+            hx-swap="outerHTML"
+            class="text-sm text-slate-600 hover:text-slate-900 underline">
+      Load more reviews
+    </button>
+  </div>
+{% endif %}
