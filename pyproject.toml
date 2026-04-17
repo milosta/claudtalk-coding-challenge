@@ -14,17 +14,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8",
-    "pytest-django>=4.8",
     "factory-boy>=3.3",
     "ruff>=0.9",
     "pre-commit>=3.7",
 ]
-
-[tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings.test"
-python_files = ["test_*.py", "tests.py", "*_test.py"]
-addopts = "-ra --strict-markers --reuse-db"
 
 [tool.setuptools.packages.find]
 include = ["config*", "apps*"]
