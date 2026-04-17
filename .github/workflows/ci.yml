@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check .
+      - run: ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: cloudtalk
+          POSTGRES_PASSWORD: cloudtalk
+          POSTGRES_DB: cloudtalk
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U cloudtalk"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ".[dev]"
+      - run: python manage.py test apps --settings=config.settings.test -v2
+        env:
+          DATABASE_URL: postgres://cloudtalk:cloudtalk@localhost:5432/cloudtalk
+          REDIS_URL: redis://localhost:6379/0
+          SECRET_KEY: ci-test-secret-key
