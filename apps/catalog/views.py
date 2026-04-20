@@ -1,4 +1,4 @@
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, F
 from django.views.generic import DetailView, ListView
 
 from .forms import ProductFilterForm
@@ -41,7 +41,7 @@ class ProductListView(ListView):
         if q:
             qs = build_search(qs, q)
         elif sort == "rating":
-            qs = qs.order_by("-avg_rating", "-created_at")
+            qs = qs.order_by(F("avg_rating").desc(nulls_last=True), "-created_at")
         elif sort == "name":
             qs = qs.order_by("name")
         else:
